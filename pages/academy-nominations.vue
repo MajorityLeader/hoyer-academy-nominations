@@ -36,7 +36,7 @@
               </v-radio-group>
             </v-col>
             <v-col>
-              <p class="mt-5" style="color:rgba(0, 0, 0, 0.6)">I hereby give permission to Congressman Hoyer's office to provide my name to nay local media who may be interested in contacting me upon the publication of my name in local newspapers if I receive a nomination and/or appointment to a U.S. Service Academy</p>
+              <p class="mt-5" style="color:rgba(0, 0, 0, 0.6)">I hereby give permission to Congressman Hoyer's office to provide my name to any local media who may be interested in contacting me upon the publication of my name in local newspapers if I receive a nomination and/or appointment to a U.S. Service Academy</p>
               </v-col>
           </v-row>
         </fieldset>

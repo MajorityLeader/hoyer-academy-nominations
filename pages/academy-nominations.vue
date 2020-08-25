@@ -506,15 +506,6 @@
               <v-file-input
                 :rules="[rules.required()]"
                 accept=".pdf"
-                v-model="form.files.guidance"
-                hint="File must be in PDF format."
-                persistent-hint
-                label="Guidance Counselor Form*"></v-file-input>
-            </v-col>
-            <v-col cols="12">
-              <v-file-input
-                :rules="[rules.required()]"
-                accept=".pdf"
                 v-model="form.files.recommendation"
                 hint="File must be in PDF format. Combine multiple files into a single PDF."
                 persistent-hint
@@ -638,7 +629,6 @@
         },
         files: {
           transcript: null,
-          guidance: null,
           recommendation: null,
           essay: null,
           photo: null
@@ -718,7 +708,6 @@
         formData.append("employment-hours-summer", this.form.educationEmployment.employment.hoursPerWeek.summer);
 
         formData.append("file_transcript", this.form.files.transcript);
-        formData.append("file_transcript", this.form.files.guidance);
         formData.append("file_recommendation", this.form.files.recommendation);
         formData.append("file_essay", this.form.files.essay);
         formData.append("file_photo", this.form.files.photo);

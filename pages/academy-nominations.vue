@@ -30,9 +30,9 @@
           </v-row>
           <v-row>
             <v-col cols="1">
-              <v-radio-group :mandatory="true">
-                <v-radio label="Yes" value="yes"></v-radio>
-                <v-radio label="No" value="no"></v-radio>
+              <v-radio-group :mandatory="true" v-model="form.permission.media">
+                <v-radio label="Yes" :value="true"></v-radio>
+                <v-radio label="No" :value="false"></v-radio>
               </v-radio-group>
             </v-col>
             <v-col>
@@ -53,8 +53,8 @@
           <v-col cols="12" md="4">
             <v-text-field
               v-model="form.personal.ssn"
-              :counter="6"
-              :rules="[rules.required(), rules.exactLength('Social Security Number', 6)]"
+              :counter="9"
+              :rules="[rules.required(), rules.exactLength('Social Security Number', 9)]"
               validate-on-blur
               label="Social Security Number*"
             ></v-text-field>
@@ -397,6 +397,7 @@
               <v-textarea
                 filled
                 label="Provide additional information for activities indicated above"
+                v-model="form.educationEmployment.extraCurricularActivities.additionalInfo"
                 placeholder="List the grade(s) for each activity you selected above. Please indicate if you hold a leadership role in any of the activities you list."
                 hint="List the grade(s) for each activity you selected above. Please indicate if you hold a leadership role in any of the activities you list."
               ></v-textarea>
@@ -405,6 +406,7 @@
               <v-textarea
                 filled
                 label="List any athletic participation"
+                v-model="form.educationEmployment.extraCurricularActivities.athleticParticipation"
                 placeholder="For each, include the sport, whether you were varsity/JV, position, awards, letters, and grades."
                 hint="For each, include the sport, whether you were varsity/JV, position, awards, letters, and grades."
               ></v-textarea>
@@ -440,42 +442,49 @@
               <v-select
                 label="First Choice*"
                 :rules="[rules.required()]"
+                v-model="form.academySelection.first"
                 :items="['US Air Force Academy', 'US Military Academy', 'US Merchant Marine Academy', 'US Naval Academy']"
               ></v-select>
             </v-col>
             <v-col cols="12" md="3">
               <v-select
                 label="Second Choice"
+                v-model="form.academySelection.second"
                 :items="['US Air Force Academy', 'US Military Academy', 'US Merchant Marine Academy', 'US Naval Academy']"
               ></v-select>
             </v-col>
             <v-col cols="12" md="3">
               <v-select
                 label="Third Choice"
+                v-model="form.academySelection.third"
                 :items="['US Air Force Academy', 'US Military Academy', 'US Merchant Marine Academy', 'US Naval Academy']"
               ></v-select>
             </v-col>
             <v-col cols="12" md="3">
               <v-select
                 label="Fourth Choice"
+                v-model="form.academySelection.fourth"
                 :items="['US Air Force Academy', 'US Military Academy', 'US Merchant Marine Academy', 'US Naval Academy']"
               ></v-select>
             </v-col>
             <v-col cols="12">
               <v-text-field
                 label="I am also seeking a nomination through"
+                v-model="form.academySelection.where"
               >
               </v-text-field>
             </v-col>
             <v-col cols="12" md="8">
               <v-text-field
                 label="I have previously sought a nomination through"
+                v-model="form.academySelection.previous.where"
               >
               </v-text-field>
             </v-col>
             <v-col cols="12" md="4">
               <v-text-field
                 label="When"
+                v-model="form.academySelection.previous.when"
               >
               </v-text-field>
             </v-col>
@@ -488,6 +497,7 @@
               <v-file-input
                 :rules="[rules.required()]"
                 accept=".pdf"
+                v-model="form.files.transcript"
                 hint="File must be in PDF format."
                 persistent-hint
                 label="Transcript of high school record, which includes junior year and class rank*"></v-file-input>
@@ -496,6 +506,7 @@
               <v-file-input
                 :rules="[rules.required()]"
                 accept=".pdf"
+                v-model="form.files.guidance"
                 hint="File must be in PDF format."
                 persistent-hint
                 label="Guidance Counselor Form*"></v-file-input>
@@ -504,15 +515,16 @@
               <v-file-input
                 :rules="[rules.required()]"
                 accept=".pdf"
-                hint="File must be in PDF format. Multiple separate files OK."
+                v-model="form.files.recommendation"
+                hint="File must be in PDF format. Combine multiple files into a single PDF."
                 persistent-hint
-                multiple
                 label="Three Letters of Recommendation*"></v-file-input>
             </v-col>
             <v-col cols="12">
               <v-file-input
                 :rules="[rules.required()]"
                 accept=".pdf"
+                v-model="form.files.essay"
                 hint="File must be in PDF format."
                 persistent-hint
                 label="Four Essays – Personal Testimonial*"></v-file-input>
@@ -521,6 +533,7 @@
               <v-file-input
                 :rules="[rules.required()]"
                 accept="image/*"
+                v-model="form.files.photo"
                 hint="File can be in any image format"
                 persistent-hint
                 label="Recent photograph of applicant*"></v-file-input>
@@ -531,7 +544,7 @@
         type="submit"
         id="submitButton"
         :disabled="!valid"
-        @click="validate"
+        @click="formSubmit()"
         block large
         class="primary">Send Nomination Request</v-btn>
     </v-container>
@@ -553,6 +566,9 @@
       valid: true,
       dobMenu: false,
       form: {
+        permission: {
+          media: true
+        },
         personal: {
           name: null,
           ssn: null,
@@ -577,8 +593,6 @@
           city: null,
           state: null,
           zipcode: null,
-          county: null,
-          district: null,
           phone: null,
         },
         temporaryAddress: {
@@ -599,7 +613,9 @@
             yearsAttended: 0
           },
           extraCurricularActivities: {
-            clubs: []
+            clubs: [],
+            additionalInfo: null,
+            athleticParticipation: null,
           },
           employment: {
             where: null,
@@ -609,6 +625,24 @@
             }
           }
         },
+        academySelection: {
+          first: null,
+          second: null,
+          third: null,
+          fourth: null,
+          where: null,
+          previous: {
+            where: null,
+            when: null
+          }
+        },
+        files: {
+          transcript: null,
+          guidance: null,
+          recommendation: null,
+          essay: null,
+          photo: null
+        }
       },
       message: null,
       rules: {
@@ -638,6 +672,63 @@
       save (date) {
         this.$refs.dobMenu.save(date)
       },
+      async formSubmit (e) {
+        e.preventDefault();
+        let formData = new FormData();
+        formData.append("required-name", this.form.personal.name);
+        formData.append("required-ssn", this.form.personal.ssn);
+        formData.append("required-email", this.form.personal.email);
+        formData.append("required-dob", this.form.personal.birth.date);
+        formData.append("required-pob", this.form.personal.birth.place);
+        formData.append("father-name", this.form.personal.parents.father.name);
+        formData.append("father-occupation", this.form.personal.parents.father.occupation);
+        formData.append("mother-name", this.form.personal.parents.mother.name);
+        formData.append("mother-occupation", this.form.personal.parents.mother.occupation);
+
+        formData.append("required-street", this.form.legalAddress.street);
+        formData.append("required-city", this.form.legalAddress.city);
+        formData.append("required-state", this.form.legalAddress.state);
+        formData.append("required-zipcode", this.form.legalAddress.zipcode);
+        formData.append("required-phone", this.form.legalAddress.phone);
+
+        formData.append("temp-street", this.form.temporaryAddress.street);
+        formData.append("temp-city", this.form.temporaryAddress.city);
+        formData.append("temp-state", this.form.temporaryAddress.state);
+        formData.append("temp-zipcode", this.form.temporaryAddress.zipcode);
+        formData.append("temp-phone", this.form.temporaryAddress.phone);
+        formData.append("temp-enddate", this.form.temporaryAddress.endDate);
+
+        formData.append("required-highschool-location", this.form.educationEmployment.highSchool.location)
+        formData.append("required-highschool-graduation", this.form.educationEmployment.highSchool.graduation)
+        formData.append("college-location", this.form.educationEmployment.college.location)
+        formData.append("college-yearsattended", this.form.educationEmployment.college.yearsAttended)
+        formData.append("extra-clubs", this.form.educationEmployment.extraCurricularActivities.clubs.join(', '))
+        formData.append("extra-clubs-info", this.form.educationEmployment.extraCurricularActivities.additionalInfo);
+        formData.append("extra-clubs-sports", this.form.educationEmployment.extraCurricularActivities.athleticParticipation);
+
+        formData.append("academy-selection-first", this.form.academySelection.first);
+        formData.append("academy-selection-second", this.form.academySelection.second);
+        formData.append("academy-selection-third", this.form.academySelection.third);
+        formData.append("academy-selection-fourth", this.form.academySelection.fourth);
+        formData.append("academy-selection-elsewhere", this.form.academySelection.elsewhere);
+        formData.append("academy-selection-when", this.form.academySelection.when);
+
+        formData.append("employment-where", this.form.educationEmployment.employment.where);
+        formData.append("employment-hours-afterschool", this.form.educationEmployment.employment.hoursPerWeek.afterSchool);
+        formData.append("employment-hours-summer", this.form.educationEmployment.employment.hoursPerWeek.summer);
+
+        formData.append("file_transcript", this.form.files.transcript);
+        formData.append("file_transcript", this.form.files.guidance);
+        formData.append("file_recommendation", this.form.files.recommendation);
+        formData.append("file_essay", this.form.files.essay);
+        formData.append("file_photo", this.form.files.photo);
+        console.log(formData)
+        // await axios.post('https://hoyer.house.gov/', formData, {
+        //   headers: {
+        //     'Content-Type': 'multipart/form-data'
+        //   }
+        // })
+      }
     }
   }
 </script>

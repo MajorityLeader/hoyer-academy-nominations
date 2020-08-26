@@ -1,6 +1,6 @@
 <template>
   <v-app id="inspire">
-    <v-form v-model="valid" ref="form">
+    <v-form v-model="valid" ref="form" @submit.prevent="formSubmit">
       <v-container>
         <v-subheader>Fields marked with * are required.</v-subheader>
         <fieldset class="pa-5 mb-10">
@@ -200,7 +200,6 @@
             <v-col cols="12" md="2">
               <v-text-field
                 v-model="form.temporaryAddress.state"
-                :rules="[rules.exactLength('State', 2)]"
                 validate-on-blur
                 label="State"
               ></v-text-field>
@@ -712,11 +711,16 @@
         formData.append("file_essay", this.form.files.essay);
         formData.append("file_photo", this.form.files.photo);
         console.log(formData)
-        // await axios.post('https://hoyer.house.gov/', formData, {
-        //   headers: {
-        //     'Content-Type': 'multipart/form-data'
-        //   }
-        // })
+        try {
+          await axios.post('https://hoyer.house.gov/', formData, {
+            headers: {
+              'Content-Type': 'multipart/form-data'
+            }
+          })
+          window.top.location.href = "//hoyer.house.gov/academy-nominations-thank-you";
+        } catch (e) {
+          console.error(e)
+        }
       }
     }
   }

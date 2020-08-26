@@ -712,7 +712,7 @@
         formData.append("file_photo", this.form.files.photo);
         console.log(formData)
         try {
-          await axios.post('https://hoyer.house.gov/', formData, {
+          await axios.post('https://hoyer.house.gov/htbin/formproc/nominations.txt', formData, {
             headers: {
               'Content-Type': 'multipart/form-data'
             }

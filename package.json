@@ -9,6 +9,7 @@
     "deploy": "push-dir --dir=dist --branch=pages --cleanup --remote=github --allow-unclean"
   },
   "dependencies": {
+    "axios": "^0.20.0",
     "nuxt": "^2.14.1",
     "vuelidate": "^0.7.5"
   },

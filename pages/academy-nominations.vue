@@ -530,10 +530,17 @@
             </v-col>
           </v-row>
         </fieldset>
-      <v-btn
+        <v-alert type="error" v-if="submitStatus === 'ERROR'">
+          Some required fields are missing or invalid. Please review the fields marked in red above.
+        </v-alert>
+        <v-alert type="error" v-if="submitStatus === 'SUBMIT_ERROR'">
+          There was an error submitting the form. That's all we know. Please try again later.
+        </v-alert>
+        <v-btn
         type="submit"
         id="submitButton"
-        :disabled="!valid"
+        :disabled="submitStatus === 'PENDING'"
+        :loading="submitStatus === 'PENDING'"
         @click="formSubmit()"
         block large
         class="primary">Send Nomination Request</v-btn>
@@ -543,6 +550,7 @@
 </template>
 
 <script>
+  import axios from 'axios';
   export default{
     name: "nominations",
     head() {
@@ -631,9 +639,10 @@
           recommendation: null,
           essay: null,
           photo: null
-        }
+        },
       },
       message: null,
+      submitStatus: null,
       rules: {
         required: () => {
           return v => !!v || `This is required`
@@ -662,64 +671,76 @@
         this.$refs.dobMenu.save(date)
       },
       async formSubmit (e) {
-        e.preventDefault();
-        let formData = new FormData();
-        formData.append("required-name", this.form.personal.name);
-        formData.append("required-ssn", this.form.personal.ssn);
-        formData.append("required-email", this.form.personal.email);
-        formData.append("required-dob", this.form.personal.birth.date);
-        formData.append("required-pob", this.form.personal.birth.place);
-        formData.append("father-name", this.form.personal.parents.father.name);
-        formData.append("father-occupation", this.form.personal.parents.father.occupation);
-        formData.append("mother-name", this.form.personal.parents.mother.name);
-        formData.append("mother-occupation", this.form.personal.parents.mother.occupation);
+        if (!this.valid) {
+          this.validate();
+          this.submitStatus = 'ERROR'
+          setTimeout(() => {
+            this.submitStatus = 'OK'
+          }, 5000)
+        } else {
+          this.submitStatus = 'PENDING'
+          let formData = new FormData();
+          formData.append("required-name", this.form.personal.name);
+          formData.append("required-ssn", this.form.personal.ssn);
+          formData.append("required-email", this.form.personal.email);
+          formData.append("required-dob", this.form.personal.birth.date);
+          formData.append("required-pob", this.form.personal.birth.place);
+          formData.append("father-name", this.form.personal.parents.father.name);
+          formData.append("father-occupation", this.form.personal.parents.father.occupation);
+          formData.append("mother-name", this.form.personal.parents.mother.name);
+          formData.append("mother-occupation", this.form.personal.parents.mother.occupation);
 
-        formData.append("required-street", this.form.legalAddress.street);
-        formData.append("required-city", this.form.legalAddress.city);
-        formData.append("required-state", this.form.legalAddress.state);
-        formData.append("required-zipcode", this.form.legalAddress.zipcode);
-        formData.append("required-phone", this.form.legalAddress.phone);
+          formData.append("required-street", this.form.legalAddress.street);
+          formData.append("required-city", this.form.legalAddress.city);
+          formData.append("required-state", this.form.legalAddress.state);
+          formData.append("required-zipcode", this.form.legalAddress.zipcode);
+          formData.append("required-phone", this.form.legalAddress.phone);
 
-        formData.append("temp-street", this.form.temporaryAddress.street);
-        formData.append("temp-city", this.form.temporaryAddress.city);
-        formData.append("temp-state", this.form.temporaryAddress.state);
-        formData.append("temp-zipcode", this.form.temporaryAddress.zipcode);
-        formData.append("temp-phone", this.form.temporaryAddress.phone);
-        formData.append("temp-enddate", this.form.temporaryAddress.endDate);
+          formData.append("temp-street", this.form.temporaryAddress.street);
+          formData.append("temp-city", this.form.temporaryAddress.city);
+          formData.append("temp-state", this.form.temporaryAddress.state);
+          formData.append("temp-zipcode", this.form.temporaryAddress.zipcode);
+          formData.append("temp-phone", this.form.temporaryAddress.phone);
+          formData.append("temp-enddate", this.form.temporaryAddress.endDate);
 
-        formData.append("required-highschool-location", this.form.educationEmployment.highSchool.location)
-        formData.append("required-highschool-graduation", this.form.educationEmployment.highSchool.graduation)
-        formData.append("college-location", this.form.educationEmployment.college.location)
-        formData.append("college-yearsattended", this.form.educationEmployment.college.yearsAttended)
-        formData.append("extra-clubs", this.form.educationEmployment.extraCurricularActivities.clubs.join(', '))
-        formData.append("extra-clubs-info", this.form.educationEmployment.extraCurricularActivities.additionalInfo);
-        formData.append("extra-clubs-sports", this.form.educationEmployment.extraCurricularActivities.athleticParticipation);
+          formData.append("required-highschool-location", this.form.educationEmployment.highSchool.location)
+          formData.append("required-highschool-graduation", this.form.educationEmployment.highSchool.graduation)
+          formData.append("college-location", this.form.educationEmployment.college.location)
+          formData.append("college-yearsattended", this.form.educationEmployment.college.yearsAttended)
+          formData.append("extra-clubs", this.form.educationEmployment.extraCurricularActivities.clubs.join(', '))
+          formData.append("extra-clubs-info", this.form.educationEmployment.extraCurricularActivities.additionalInfo);
+          formData.append("extra-clubs-sports", this.form.educationEmployment.extraCurricularActivities.athleticParticipation);
 
-        formData.append("academy-selection-first", this.form.academySelection.first);
-        formData.append("academy-selection-second", this.form.academySelection.second);
-        formData.append("academy-selection-third", this.form.academySelection.third);
-        formData.append("academy-selection-fourth", this.form.academySelection.fourth);
-        formData.append("academy-selection-elsewhere", this.form.academySelection.elsewhere);
-        formData.append("academy-selection-when", this.form.academySelection.when);
+          formData.append("academy-selection-first", this.form.academySelection.first);
+          formData.append("academy-selection-second", this.form.academySelection.second);
+          formData.append("academy-selection-third", this.form.academySelection.third);
+          formData.append("academy-selection-fourth", this.form.academySelection.fourth);
+          formData.append("academy-selection-elsewhere", this.form.academySelection.elsewhere);
+          formData.append("academy-selection-when", this.form.academySelection.when);
 
-        formData.append("employment-where", this.form.educationEmployment.employment.where);
-        formData.append("employment-hours-afterschool", this.form.educationEmployment.employment.hoursPerWeek.afterSchool);
-        formData.append("employment-hours-summer", this.form.educationEmployment.employment.hoursPerWeek.summer);
+          formData.append("employment-where", this.form.educationEmployment.employment.where);
+          formData.append("employment-hours-afterschool", this.form.educationEmployment.employment.hoursPerWeek.afterSchool);
+          formData.append("employment-hours-summer", this.form.educationEmployment.employment.hoursPerWeek.summer);
 
-        formData.append("file_transcript", this.form.files.transcript);
-        formData.append("file_recommendation", this.form.files.recommendation);
-        formData.append("file_essay", this.form.files.essay);
-        formData.append("file_photo", this.form.files.photo);
-        console.log(formData)
-        try {
-          await axios.post('https://hoyer.house.gov/htbin/formproc/nominations.txt', formData, {
-            headers: {
-              'Content-Type': 'multipart/form-data'
-            }
-          })
-          window.top.location.href = "//hoyer.house.gov/academy-nominations-thank-you";
-        } catch (e) {
-          console.error(e)
+          formData.append("file_transcript", this.form.files.transcript);
+          formData.append("file_recommendation", this.form.files.recommendation);
+          formData.append("file_essay", this.form.files.essay);
+          formData.append("file_photo", this.form.files.photo);
+          console.log(formData)
+          try {
+            await axios.post('https://hoyer.house.gov/htbin/formproc/nominations.txt', formData, {
+              headers: {
+                'Content-Type': 'multipart/form-data'
+              }
+            })
+            window.top.location.href = "//hoyer.house.gov/academy-nominations-thank-you";
+          } catch (e) {
+            console.error(e)
+            this.submitStatus = 'SUBMIT_ERROR'
+            setTimeout(() => {
+              this.submitStatus = 'OK'
+            }, 5000)
+          }
         }
       }
     }

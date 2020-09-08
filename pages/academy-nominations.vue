@@ -43,20 +43,24 @@
         <fieldset class="pa-5 mb-10">
         <legend>Personal Information</legend>
         <v-row>
-          <v-col cols="12" md="8">
+          <v-col cols="12" md="4">
             <v-text-field
-              v-model="form.personal.name"
+              v-model="form.personal.firstName"
               :rules="[rules.required()]"
-              label="Full Name*"
+              label="First Name*"
             ></v-text-field>
           </v-col>
           <v-col cols="12" md="4">
             <v-text-field
-              v-model="form.personal.ssn"
-              :counter="9"
-              :rules="[rules.required(), rules.exactLength('Social Security Number', 9)]"
-              validate-on-blur
-              label="Social Security Number*"
+              v-model="form.personal.middleName"
+              label="Middle Name"
+            ></v-text-field>
+          </v-col>
+          <v-col cols="12" md="4">
+            <v-text-field
+              v-model="form.personal.lastName"
+              :rules="[rules.required()]"
+              label="Last Name*"
             ></v-text-field>
           </v-col>
         </v-row>
@@ -568,8 +572,9 @@
           media: true
         },
         personal: {
-          name: null,
-          ssn: null,
+          firstName: null,
+          middleName: null,
+          lastName: null,
           email: null,
           birth: {
             date: null,
@@ -680,15 +685,16 @@
         } else {
           this.submitStatus = 'PENDING'
           let formData = new FormData();
-          formData.append("required-name", this.form.personal.name);
-          formData.append("required-ssn", this.form.personal.ssn);
+          formData.append("required-FIRSTNAME", this.form.personal.firstName);
+          formData.append("required-MIDDLENAME", this.form.personal.middleName);
+          formData.append("required-LASTNAME", this.form.personal.lastName);
           formData.append("required-email", this.form.personal.email);
           formData.append("required-dob", this.form.personal.birth.date);
           formData.append("required-pob", this.form.personal.birth.place);
-          formData.append("father-name", this.form.personal.parents.father.name);
-          formData.append("father-occupation", this.form.personal.parents.father.occupation);
-          formData.append("mother-name", this.form.personal.parents.mother.name);
-          formData.append("mother-occupation", this.form.personal.parents.mother.occupation);
+          formData.append("father-name", this.form.personal.parents.father.name || '');
+          formData.append("father-occupation", this.form.personal.parents.father.occupation || '');
+          formData.append("mother-name", this.form.personal.parents.mother.name || '');
+          formData.append("mother-occupation", this.form.personal.parents.mother.occupation || '');
 
           formData.append("required-street", this.form.legalAddress.street);
           formData.append("required-city", this.form.legalAddress.city);
@@ -696,31 +702,31 @@
           formData.append("required-zipcode", this.form.legalAddress.zipcode);
           formData.append("required-phone", this.form.legalAddress.phone);
 
-          formData.append("temp-street", this.form.temporaryAddress.street);
-          formData.append("temp-city", this.form.temporaryAddress.city);
-          formData.append("temp-state", this.form.temporaryAddress.state);
-          formData.append("temp-zipcode", this.form.temporaryAddress.zipcode);
-          formData.append("temp-phone", this.form.temporaryAddress.phone);
-          formData.append("temp-enddate", this.form.temporaryAddress.endDate);
+          formData.append("temp-street", this.form.temporaryAddress.street || '');
+          formData.append("temp-city", this.form.temporaryAddress.city || '');
+          formData.append("temp-state", this.form.temporaryAddress.state || '');
+          formData.append("temp-zipcode", this.form.temporaryAddress.zipcode || '');
+          formData.append("temp-phone", this.form.temporaryAddress.phone || '');
+          formData.append("temp-enddate", this.form.temporaryAddress.endDate || '');
 
           formData.append("required-highschool-location", this.form.educationEmployment.highSchool.location)
           formData.append("required-highschool-graduation", this.form.educationEmployment.highSchool.graduation)
-          formData.append("college-location", this.form.educationEmployment.college.location)
-          formData.append("college-yearsattended", this.form.educationEmployment.college.yearsAttended)
-          formData.append("extra-clubs", this.form.educationEmployment.extraCurricularActivities.clubs.join(', '))
-          formData.append("extra-clubs-info", this.form.educationEmployment.extraCurricularActivities.additionalInfo);
-          formData.append("extra-clubs-sports", this.form.educationEmployment.extraCurricularActivities.athleticParticipation);
+          formData.append("college-location", this.form.educationEmployment.college.location || '')
+          formData.append("college-yearsattended", this.form.educationEmployment.college.yearsAttended || '')
+          formData.append("extra-clubs", this.form.educationEmployment.extraCurricularActivities.clubs.join(', ') || '')
+          formData.append("extra-clubs-info", this.form.educationEmployment.extraCurricularActivities.additionalInfo || '');
+          formData.append("extra-clubs-sports", this.form.educationEmployment.extraCurricularActivities.athleticParticipation || '');
 
-          formData.append("academy-selection-first", this.form.academySelection.first);
-          formData.append("academy-selection-second", this.form.academySelection.second);
-          formData.append("academy-selection-third", this.form.academySelection.third);
-          formData.append("academy-selection-fourth", this.form.academySelection.fourth);
-          formData.append("academy-selection-elsewhere", this.form.academySelection.elsewhere);
-          formData.append("academy-selection-when", this.form.academySelection.when);
+          formData.append("academy-selection-first", this.form.academySelection.first || '');
+          formData.append("academy-selection-second", this.form.academySelection.second || '');
+          formData.append("academy-selection-third", this.form.academySelection.third || '');
+          formData.append("academy-selection-fourth", this.form.academySelection.fourth || '');
+          formData.append("academy-selection-elsewhere", this.form.academySelection.elsewhere || '');
+          formData.append("academy-selection-when", this.form.academySelection.when || '');
 
-          formData.append("employment-where", this.form.educationEmployment.employment.where);
-          formData.append("employment-hours-afterschool", this.form.educationEmployment.employment.hoursPerWeek.afterSchool);
-          formData.append("employment-hours-summer", this.form.educationEmployment.employment.hoursPerWeek.summer);
+          formData.append("employment-where", this.form.educationEmployment.employment.where || '');
+          formData.append("employment-hours-afterschool", this.form.educationEmployment.employment.hoursPerWeek.afterSchool || '');
+          formData.append("employment-hours-summer", this.form.educationEmployment.employment.hoursPerWeek.summer || '');
 
           formData.append("file_transcript", this.form.files.transcript);
           formData.append("file_recommendation", this.form.files.recommendation);

@@ -4,7 +4,7 @@
   "scripts": {
     "dev": "nuxt",
     "build": "nuxt build",
-    "generate": "nuxt generate",
+    "generate": "NODE_ENV=prod nuxt generate",
     "start": "nuxt start",
     "deploy": "push-dir --dir=dist --branch=pages --cleanup --remote=github --allow-unclean"
   },

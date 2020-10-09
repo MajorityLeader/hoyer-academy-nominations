@@ -498,37 +498,37 @@
           <v-row>
             <v-col cols="12">
               <v-file-input
-                :rules="[rules.required()]"
+                  :rules="[rules.filesize()]"
+                  accept=".pdf"
+                  v-model="form.files.recommendation"
+                  hint="File must be in PDF format. Combine multiple files into a single PDF. 500kb max size."
+                  persistent-hint
+                  label="Three Letters of Recommendation*"></v-file-input>
+            </v-col>
+            <v-col cols="12">
+              <v-file-input
+                :rules="[rules.required(), rules.filesize()]"
                 accept=".pdf"
                 v-model="form.files.transcript"
-                hint="File must be in PDF format."
+                hint="File must be in PDF format. 500kb max size."
                 persistent-hint
                 label="Transcript of high school record, which includes junior year and class rank*"></v-file-input>
             </v-col>
             <v-col cols="12">
               <v-file-input
-                :rules="[rules.required()]"
-                accept=".pdf"
-                v-model="form.files.recommendation"
-                hint="File must be in PDF format. Combine multiple files into a single PDF."
-                persistent-hint
-                label="Three Letters of Recommendation*"></v-file-input>
-            </v-col>
-            <v-col cols="12">
-              <v-file-input
-                :rules="[rules.required()]"
+                :rules="[rules.required(), rules.filesize()]"
                 accept=".pdf"
                 v-model="form.files.essay"
-                hint="File must be in PDF format."
+                hint="File must be in PDF format. 500kb max size."
                 persistent-hint
                 label="Four Essays – Personal Testimonial*"></v-file-input>
             </v-col>
             <v-col cols="12">
               <v-file-input
-                :rules="[rules.required()]"
+                :rules="[rules.required(), rules.filesize()]"
                 accept="image/*"
                 v-model="form.files.photo"
-                hint="File can be in any image format"
+                hint="File can be in any image format. 500kb max size."
                 persistent-hint
                 label="Recent photograph of applicant*"></v-file-input>
             </v-col>
@@ -651,6 +651,9 @@
       rules: {
         required: () => {
           return v => !!v || `This is required`
+        },
+        filesize: () => {
+          return value => !value || value.size < 500000 || 'File size should be less than 500 KB!'
         },
         email: () => {
           return v => /.+@.+/.test(v) || 'E-mail must be valid'

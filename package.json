@@ -1,5 +1,5 @@
 {
-  "name": "Hoyer",
+  "name": "hoyer",
   "license": "UNLICENSED",
   "scripts": {
     "dev": "nuxt",

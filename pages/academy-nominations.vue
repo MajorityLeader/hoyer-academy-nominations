@@ -1117,10 +1117,10 @@ export default {
         } catch (e) {
           await axios.post("https://logger-kal2mblwyq-uk.a.run.app/event", {
             severity: "ERROR",
-            project: process.env("NODE_ENV") == "dev" ? "hoyer-dev" : "hoyer",
+            project: process.env.NODE_ENV == "dev" ? "hoyer-dev" : "hoyer",
             message: `Academy nomination failed. Error message from formproc: ${e.message}`,
             location: this.$route.query.page,
-            metaData: e.response.data.errors,
+            metaData: e.response.data,
           });
           this.submitStatus = "SUBMIT_ERROR";
           setTimeout(() => {
@@ -1129,10 +1129,10 @@ export default {
         } finally {
           await axios.post("https://logger-kal2mblwyq-uk.a.run.app/event", {
             severity: "INFO",
-            project: process.env("NODE_ENV") == "dev" ? "hoyer-dev" : "hoyer",
+            project: process.env.NODE_ENV == "dev" ? "hoyer-dev" : "hoyer",
             message: "Academy nomination submitted.",
             location: this.$route.query.page,
-            metaData: form,
+            metaData: this.form,
           });
         }
       }

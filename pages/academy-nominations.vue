@@ -1,6 +1,6 @@
 <template>
   <v-app id="inspire">
-    <v-form v-model="valid" ref="form" @submit.prevent="formSubmit">
+    <v-form v-model="valid" ref="form" autocomplete="on" method="post" @submit.prevent="formSubmit" action="/htbin/formproc/nominations.txt&display=/academy-nominations-thank-you&nobase&fpGetVer=2">
       <v-container>
         <v-subheader>Fields marked with * are required.</v-subheader>
         <fieldset class="pa-5 mb-10">
@@ -39,8 +39,8 @@
           <v-row>
             <v-col cols="1">
               <v-radio-group :mandatory="true" v-model="form.permission.media">
-                <v-radio label="Yes" :value="true"></v-radio>
-                <v-radio label="No" :value="false"></v-radio>
+                <v-radio label="Yes" :value="true" name="permission-media"></v-radio>
+                <v-radio label="No" :value="false" name="permission-media"></v-radio>
               </v-radio-group>
             </v-col>
             <v-col>
@@ -62,12 +62,14 @@
                 v-model="form.personal.firstName"
                 :rules="[rules.required()]"
                 label="First Name*"
+                name="required-FIRSTNAME"
               ></v-text-field>
             </v-col>
             <v-col cols="12" md="4">
               <v-text-field
                 v-model="form.personal.middleName"
                 label="Middle Name"
+                name="MIDDLENAME"
               ></v-text-field>
             </v-col>
             <v-col cols="12" md="4">
@@ -75,6 +77,7 @@
                 v-model="form.personal.lastName"
                 :rules="[rules.required()]"
                 label="Last Name*"
+                name="required-LASTNAME"
               ></v-text-field>
             </v-col>
           </v-row>
@@ -85,6 +88,7 @@
                 label="Email*"
                 :rules="[rules.required(), rules.email()]"
                 validate-on-blur
+                name="required-email"
               ></v-text-field>
             </v-col>
           </v-row>
@@ -106,6 +110,7 @@
                     v-bind="attrs"
                     :rules="[rules.required()]"
                     v-on="on"
+                    name="required-dob"
                   ></v-text-field>
                 </template>
                 <v-date-picker
@@ -122,6 +127,7 @@
                 v-model="form.personal.birth.place"
                 label="Place of Birth*"
                 :rules="[rules.required('Place of Birth')]"
+                    name="required-pob"
               ></v-text-field>
             </v-col>
           </v-row>
@@ -130,12 +136,14 @@
               <v-text-field
                 v-model="form.personal.parents.father.name"
                 label="Father's Name"
+                name="father-name"
               ></v-text-field>
             </v-col>
             <v-col cols="12" md="6">
               <v-text-field
                 v-model="form.personal.parents.father.occupation"
                 label="Father's Occupation"
+                name="father-occupation"
               ></v-text-field>
             </v-col>
           </v-row>
@@ -144,12 +152,14 @@
               <v-text-field
                 v-model="form.personal.parents.mother.name"
                 label="Mother's Name"
+                name="mother-name"
               ></v-text-field>
             </v-col>
             <v-col cols="12" md="6">
               <v-text-field
                 v-model="form.personal.parents.mother.occupation"
                 label="Mother's Occupation"
+                name="mother-occupation"
               ></v-text-field>
             </v-col>
           </v-row>
@@ -162,6 +172,7 @@
                 v-model="form.legalAddress.street"
                 :rules="[rules.required()]"
                 label="Street*"
+                    name="required-street"
               ></v-text-field>
             </v-col>
             <v-col cols="12" md="6">
@@ -170,6 +181,7 @@
                 :rules="[rules.required()]"
                 validate-on-blur
                 label="City*"
+                    name="required-city"
               ></v-text-field>
             </v-col>
             <v-col cols="12" md="2">
@@ -178,6 +190,7 @@
                 :rules="[rules.required(), rules.exactLength('State', 2)]"
                 validate-on-blur
                 label="State*"
+                    name="required-state"
               ></v-text-field>
             </v-col>
             <v-col cols="12" md="4">
@@ -187,6 +200,7 @@
                 :rules="[rules.required(), rules.exactLength('Zipcode', 5)]"
                 validate-on-blur
                 label="Zipcode*"
+                    name="required-zipcode"
               ></v-text-field>
             </v-col>
             <v-col cols="6">
@@ -195,6 +209,7 @@
                 :rules="[rules.required()]"
                 validate-on-blur
                 label="Phone*"
+                    name="required-phone"
               ></v-text-field>
             </v-col>
           </v-row>
@@ -206,6 +221,7 @@
               <v-text-field
                 v-model="form.temporaryAddress.street"
                 label="Street"
+                    name="temp-street"
               ></v-text-field>
             </v-col>
             <v-col cols="12" md="6">
@@ -213,6 +229,7 @@
                 v-model="form.temporaryAddress.city"
                 validate-on-blur
                 label="City"
+                    name="temp-city"
               ></v-text-field>
             </v-col>
             <v-col cols="12" md="2">
@@ -220,6 +237,7 @@
                 v-model="form.temporaryAddress.state"
                 validate-on-blur
                 label="State"
+                    name="temp-state"
               ></v-text-field>
             </v-col>
             <v-col cols="12" md="4">
@@ -228,6 +246,7 @@
                 :counter="5"
                 validate-on-blur
                 label="Zipcode"
+                    name="temp-zipcode"
               ></v-text-field>
             </v-col>
             <v-col cols="6">
@@ -235,6 +254,7 @@
                 v-model="form.temporaryAddress.phone"
                 validate-on-blur
                 label="Phone"
+                    name="temp-phone"
               ></v-text-field>
             </v-col>
             <v-col cols="4">
@@ -242,6 +262,7 @@
                 v-model="form.temporaryAddress.endDate"
                 validate-on-blur
                 label="Address Valid Until"
+                    name="temp-enddate"
               ></v-text-field>
             </v-col>
           </v-row>
@@ -254,6 +275,7 @@
                 v-model="form.educationEmployment.highSchool.location"
                 :rules="[rules.required()]"
                 label="High School*"
+                    name="required-highschool-location"
               ></v-text-field>
             </v-col>
             <v-col cols="12" md="3">
@@ -264,12 +286,14 @@
                   rules.exactLength('High School Graduation Year', 4),
                 ]"
                 label="Year of Graduation*"
+                    name="required-highschool-graduation"
               ></v-text-field>
             </v-col>
             <v-col cols="12" md="9">
               <v-text-field
                 v-model="form.educationEmployment.college.location"
                 label="College (if any)"
+                    name="college-location"
               ></v-text-field>
             </v-col>
             <v-col cols="12" md="3">
@@ -277,6 +301,7 @@
                 v-model="form.educationEmployment.college.yearsAttended"
                 label="Years Completed"
                 type="number"
+                    name="college-yearsattended"
               ></v-text-field>
             </v-col>
             <v-col cols="12"
@@ -290,6 +315,7 @@
                 "
                 value="Boys' State/Boys' Nation"
                 label="Boys' State/Boys' Nation"
+                name="extra-clubs"
               ></v-checkbox>
             </v-col>
             <v-col cols="4">
@@ -299,6 +325,7 @@
                 "
                 value="Girls' State/Girls' Nation"
                 label="Girls' State/Girls' Nation"
+                name="extra-clubs"
               ></v-checkbox>
             </v-col>
             <v-col cols="4">
@@ -308,6 +335,7 @@
                 "
                 value="President of Student Gov't"
                 label="President of Student Gov't"
+                name="extra-clubs"
               ></v-checkbox>
             </v-col>
             <v-col cols="4">
@@ -317,6 +345,7 @@
                 "
                 value="Other student Gov't office"
                 label="Other student Gov't office"
+                name="extra-clubs"
               ></v-checkbox>
             </v-col>
             <v-col cols="4">
@@ -326,6 +355,7 @@
                 "
                 value="Key Club"
                 label="Key Club"
+                name="extra-clubs"
               ></v-checkbox>
             </v-col>
             <v-col cols="4">
@@ -335,6 +365,7 @@
                 "
                 value="Service Club"
                 label="Service Club"
+                name="extra-clubs"
               ></v-checkbox>
             </v-col>
             <v-col cols="4">
@@ -344,6 +375,7 @@
                 "
                 value="Eagle Scout"
                 label="Eagle Scout"
+                name="extra-clubs"
               ></v-checkbox>
             </v-col>
             <v-col cols="4">
@@ -353,6 +385,7 @@
                 "
                 value="Girl Scout"
                 label="Girl Scout"
+                name="extra-clubs"
               ></v-checkbox>
             </v-col>
             <v-col cols="4">
@@ -362,6 +395,7 @@
                 "
                 value="Boy Scout"
                 label="Boy Scout"
+                name="extra-clubs"
               ></v-checkbox>
             </v-col>
             <v-col cols="4">
@@ -371,6 +405,7 @@
                 "
                 value="President of Class"
                 label="President of Class"
+                name="extra-clubs"
               ></v-checkbox>
             </v-col>
             <v-col cols="4">
@@ -380,6 +415,7 @@
                 "
                 value="Science Club"
                 label="Science Club"
+                name="extra-clubs"
               ></v-checkbox>
             </v-col>
             <v-col cols="4">
@@ -389,6 +425,7 @@
                 "
                 value="Student Council Member"
                 label="Student Council Member"
+                name="extra-clubs"
               ></v-checkbox>
             </v-col>
             <v-col cols="4">
@@ -398,6 +435,7 @@
                 "
                 value="National Honor Society"
                 label="National Honor Society"
+                name="extra-clubs"
               ></v-checkbox>
             </v-col>
             <v-col cols="4">
@@ -407,6 +445,7 @@
                 "
                 value="School Band/Chorus"
                 label="School Band/Chorus"
+                name="extra-clubs"
               ></v-checkbox>
             </v-col>
             <v-col cols="4">
@@ -416,6 +455,7 @@
                 "
                 value="Yearbook/Newspaper Editor"
                 label="Yearbook/Newspaper Editor"
+                name="extra-clubs"
               ></v-checkbox>
             </v-col>
             <v-col cols="4">
@@ -425,6 +465,7 @@
                 "
                 value="Community Award"
                 label="Community Award"
+                name="extra-clubs"
               ></v-checkbox>
             </v-col>
             <v-col cols="4">
@@ -434,6 +475,7 @@
                 "
                 value="Club Officer"
                 label="Club Officer"
+                name="extra-clubs"
               ></v-checkbox>
             </v-col>
             <v-col cols="4">
@@ -443,6 +485,7 @@
                 "
                 value="Junior ROTC"
                 label="Junior ROTC"
+                name="extra-clubs"
               ></v-checkbox>
             </v-col>
             <v-col cols="4">
@@ -452,11 +495,13 @@
                 "
                 value="Other"
                 label="Other"
+                name="extra-clubs"
               ></v-checkbox>
             </v-col>
             <v-col cols="12">
               <v-textarea
                 filled
+                name="extra-clubs-info"
                 label="Provide additional information for activities indicated above"
                 v-model="
                   form.educationEmployment.extraCurricularActivities
@@ -469,6 +514,7 @@
             <v-col cols="12">
               <v-textarea
                 filled
+                name="extra-clubs-sports"
                 label="List any athletic participation"
                 v-model="
                   form.educationEmployment.extraCurricularActivities
@@ -480,12 +526,14 @@
             </v-col>
             <v-col cols="12" md="6">
               <v-text-field
+                name="employment-where"
                 v-model="form.educationEmployment.employment.where"
                 label="If employed, where"
               ></v-text-field>
             </v-col>
             <v-col cols="12" md="3">
               <v-text-field
+                name="employment-hours-afterschool"
                 v-model="
                   form.educationEmployment.employment.hoursPerWeek.afterSchool
                 "
@@ -500,6 +548,7 @@
                 "
                 label="How many hours per week during summer"
                 type="number"
+                name="employment-hours-afterschool"
               ></v-text-field>
             </v-col>
           </v-row>
@@ -516,6 +565,7 @@
             <v-col cols="12" md="3">
               <v-select
                 label="First Choice*"
+                name="academy-selection-first"
                 :rules="[rules.required()]"
                 v-model="form.academySelection.first"
                 :items="[
@@ -529,6 +579,7 @@
             <v-col cols="12" md="3">
               <v-select
                 label="Second Choice"
+                name="academy-selection-second"
                 v-model="form.academySelection.second"
                 :items="[
                   'US Air Force Academy',
@@ -541,6 +592,7 @@
             <v-col cols="12" md="3">
               <v-select
                 label="Third Choice"
+                name="academy-selection-third"
                 v-model="form.academySelection.third"
                 :items="[
                   'US Air Force Academy',
@@ -553,6 +605,7 @@
             <v-col cols="12" md="3">
               <v-select
                 label="Fourth Choice"
+                name="academy-selection-fourth"
                 v-model="form.academySelection.fourth"
                 :items="[
                   'US Air Force Academy',
@@ -564,6 +617,7 @@
             </v-col>
             <v-col cols="12">
               <v-text-field
+                name="academy-selection-elsewhere"
                 label="I am also seeking a nomination through"
                 v-model="form.academySelection.elsewhere"
               >
@@ -571,6 +625,7 @@
             </v-col>
             <v-col cols="12" md="8">
               <v-text-field
+                name="academy-selection-previous-elsewhere"
                 label="I have previously sought a nomination through"
                 v-model="form.academySelection.previous.where"
               >
@@ -579,6 +634,7 @@
             <v-col cols="12" md="4">
               <v-text-field
                 label="When"
+                name="academy-selection-elsewhere-when"
                 v-model="form.academySelection.previous.when"
               >
               </v-text-field>
@@ -598,16 +654,19 @@
                 <v-radio
                   label="I will attach my letters of recommendation here"
                   :value="0"
+                name="required-contact-reference"
                 ></v-radio>
                 <v-radio
                   label="Please contact my references for letters of recommendation for me"
                   :value="1"
+                name="required-contact-reference"
                 ></v-radio>
               </v-radio-group>
             </v-col>
             <v-col cols="12">
               <v-file-input
                 :rules="[rules.filesize()]"
+                name="file-recommendation"
                 accept=".pdf"
                 v-model="form.files.recommendation"
                 v-if="lettersMethod === 0"
@@ -618,6 +677,7 @@
             </v-col>
             <v-col cols="12" v-if="lettersMethod === 1">
               <v-text-field
+                name="reference1-firstname"
                 v-model="form.references.one.firstName"
                 validate-on-blur
                 :rules="[
@@ -628,6 +688,7 @@
                 label="Reference First Name"
               ></v-text-field>
               <v-text-field
+                name="reference1-lastname"
                 v-model="form.references.one.lastName"
                 validate-on-blur
                 :rules="[
@@ -638,6 +699,7 @@
                 label="Reference Last Name"
               ></v-text-field>
               <v-text-field
+                name="reference1-email"
                 v-model="form.references.one.email"
                 validate-on-blur
                 class="mb-8"
@@ -652,6 +714,7 @@
               ></v-text-field>
 
               <v-text-field
+                name="reference2-firstname"
                 v-model="form.references.two.firstName"
                 validate-on-blur
                 :rules="[
@@ -662,6 +725,7 @@
                 label="Reference First Name"
               ></v-text-field>
               <v-text-field
+                name="reference2-lastname"
                 v-model="form.references.two.lastName"
                 validate-on-blur
                 :rules="[
@@ -672,6 +736,7 @@
                 label="Reference Last Name"
               ></v-text-field>
               <v-text-field
+                name="reference2-email"
                 v-model="form.references.two.email"
                 validate-on-blur
                 class="mb-8"
@@ -686,6 +751,7 @@
               ></v-text-field>
 
               <v-text-field
+                name="reference3-firstname"
                 v-model="form.references.three.firstName"
                 validate-on-blur
                 :rules="[
@@ -697,6 +763,7 @@
                 label="Reference First Name"
               ></v-text-field>
               <v-text-field
+                name="reference3-lastname"
                 v-model="form.references.three.lastName"
                 validate-on-blur
                 :rules="[
@@ -707,6 +774,7 @@
                 label="Reference Last Name"
               ></v-text-field>
               <v-text-field
+                name="reference3-email"
                 v-model="form.references.three.email"
                 validate-on-blur
                 :rules="[
@@ -726,6 +794,7 @@
           <v-row>
             <v-col cols="12">
               <v-file-input
+                name="file-transcript"
                 :rules="[rules.required(), rules.filesize()]"
                 accept=".pdf"
                 v-model="form.files.transcript"
@@ -736,6 +805,7 @@
             </v-col>
             <v-col cols="12">
               <v-file-input
+                name="file-essay"
                 :rules="[rules.required(), rules.filesize()]"
                 accept=".pdf"
                 v-model="form.files.essay"
@@ -746,6 +816,7 @@
             </v-col>
             <v-col cols="12">
               <v-file-input
+                name="file-photo"
                 :rules="[rules.required(), rules.filesize()]"
                 accept="image/*"
                 v-model="form.files.photo"
@@ -756,25 +827,26 @@
             </v-col>
           </v-row>
         </fieldset>
+        <recaptcha />
+        <div class="clearfix">&nbsp;</div>
         <v-alert type="error" v-if="submitStatus === 'ERROR'">
           Some required fields are missing or invalid. Please review the fields
           marked in red above.
         </v-alert>
         <v-alert type="error" v-if="submitStatus === 'SUBMIT_ERROR'">
-          There was an error submitting the form. That's all we know. Please try
-          again later.
+          There was an error submitting the form. {{ message }}
         </v-alert>
-        <v-btn
-          type="submit"
-          id="submitButton"
-          :disabled="submitStatus === 'PENDING'"
-          :loading="submitStatus === 'PENDING'"
-          @click="formSubmit()"
-          block
-          large
-          class="primary"
-          >Send Nomination Request</v-btn
-        >
+          <v-btn
+            type="submit"
+            id="submitButton"
+            :disabled="submitStatus === 'PENDING'"
+            :loading="submitStatus === 'PENDING'"
+            @click="formSubmit()"
+            block
+            large
+            class="primary"
+            >Send Nomination Request</v-btn
+          >
       </v-container>
     </v-form>
   </v-app>
@@ -782,8 +854,10 @@
 
 <script>
 import axios from "axios";
+import VueRecaptcha from 'vue-recaptcha';
 export default {
   name: "nominations",
+  components: { VueRecaptcha },
   head() {
     return {
       base: {
@@ -891,7 +965,7 @@ export default {
       },
     },
     lettersMethod: 0,
-    message: null,
+    message: 'That is all we know. Please try again.',
     submitStatus: null,
     rules: {
       required: () => {
@@ -939,201 +1013,27 @@ export default {
         }, 5000);
       } else {
         this.submitStatus = "PENDING";
-        let formData = new FormData();
-        formData.append("required-FIRSTNAME", this.form.personal.firstName);
-        formData.append("required-MIDDLENAME", this.form.personal.middleName);
-        formData.append("required-LASTNAME", this.form.personal.lastName);
-        formData.append("required-email", this.form.personal.email);
-        formData.append("required-dob", this.form.personal.birth.date);
-        formData.append("required-pob", this.form.personal.birth.place);
-        formData.append(
-          "father-name",
-          this.form.personal.parents.father.name || ""
-        );
-        formData.append(
-          "father-occupation",
-          this.form.personal.parents.father.occupation || ""
-        );
-        formData.append(
-          "mother-name",
-          this.form.personal.parents.mother.name || ""
-        );
-        formData.append(
-          "mother-occupation",
-          this.form.personal.parents.mother.occupation || ""
-        );
-
-        formData.append("required-street", this.form.legalAddress.street);
-        formData.append("required-city", this.form.legalAddress.city);
-        formData.append("required-state", this.form.legalAddress.state);
-        formData.append("required-zipcode", this.form.legalAddress.zipcode);
-        formData.append("required-phone", this.form.legalAddress.phone);
-
-        formData.append("temp-street", this.form.temporaryAddress.street || "");
-        formData.append("temp-city", this.form.temporaryAddress.city || "");
-        formData.append("temp-state", this.form.temporaryAddress.state || "");
-        formData.append(
-          "temp-zipcode",
-          this.form.temporaryAddress.zipcode || ""
-        );
-        formData.append("temp-phone", this.form.temporaryAddress.phone || "");
-        formData.append(
-          "temp-enddate",
-          this.form.temporaryAddress.endDate || ""
-        );
-
-        formData.append(
-          "required-highschool-location",
-          this.form.educationEmployment.highSchool.location
-        );
-        formData.append(
-          "required-highschool-graduation",
-          this.form.educationEmployment.highSchool.graduation
-        );
-        formData.append(
-          "college-location",
-          this.form.educationEmployment.college.location || ""
-        );
-        formData.append(
-          "college-yearsattended",
-          this.form.educationEmployment.college.yearsAttended || ""
-        );
-        formData.append(
-          "extra-clubs",
-          this.form.educationEmployment.extraCurricularActivities.clubs.join(
-            ", "
-          ) || ""
-        );
-        formData.append(
-          "extra-clubs-info",
-          this.form.educationEmployment.extraCurricularActivities
-            .additionalInfo || ""
-        );
-        formData.append(
-          "extra-clubs-sports",
-          this.form.educationEmployment.extraCurricularActivities
-            .athleticParticipation || ""
-        );
-
-        formData.append(
-          "academy-selection-first",
-          this.form.academySelection.first || ""
-        );
-        formData.append(
-          "academy-selection-second",
-          this.form.academySelection.second || ""
-        );
-        formData.append(
-          "academy-selection-third",
-          this.form.academySelection.third || ""
-        );
-        formData.append(
-          "academy-selection-fourth",
-          this.form.academySelection.fourth || ""
-        );
-        formData.append(
-          "academy-selection-elsewhere",
-          this.form.academySelection.elsewhere || ""
-        );
-        formData.append(
-          "academy-selection-where",
-          this.form.academySelection.previous.where || ""
-        );
-        formData.append(
-          "academy-selection-when",
-          this.form.academySelection.previous.when || ""
-        );
-
-        formData.append(
-          "employment-where",
-          this.form.educationEmployment.employment.where || ""
-        );
-        formData.append(
-          "employment-hours-afterschool",
-          this.form.educationEmployment.employment.hoursPerWeek.afterSchool ||
-            ""
-        );
-        formData.append(
-          "employment-hours-summer",
-          this.form.educationEmployment.employment.hoursPerWeek.summer || ""
-        );
-
-        formData.append(
-          "required-Contact Reference",
-          this.lettersMethod ? "Yes" : "No"
-        );
-        formData.append(
-          "file_recommendation",
-          this.form.files.recommendation || ""
-        );
-        formData.append(
-          "reference1-firstname",
-          this.form.references.one.firstName || ""
-        );
-        formData.append(
-          "reference1-lastname",
-          this.form.references.one.lastName || ""
-        );
-        formData.append(
-          "reference1-email",
-          this.form.references.one.email || ""
-        );
-        formData.append(
-          "reference2-firstname",
-          this.form.references.two.firstName || ""
-        );
-        formData.append(
-          "reference2-lastname",
-          this.form.references.two.lastName || ""
-        );
-        formData.append(
-          "reference2-email",
-          this.form.references.two.email || ""
-        );
-        formData.append(
-          "reference3-firstname",
-          this.form.references.three.firstName || ""
-        );
-        formData.append(
-          "reference3-lastname",
-          this.form.references.three.lastName || ""
-        );
-        formData.append(
-          "reference3-email",
-          this.form.references.three.email || ""
-        );
-
-        formData.append("file_transcript", this.form.files.transcript);
-        formData.append("file_essay", this.form.files.essay);
-        formData.append("file_photo", this.form.files.photo);
-        console.log(formData);
         try {
-          await axios.post("/htbin/formproc/nominations.txt", formData, {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
+          await axios.post("https://logger-kal2mblwyq-uk.a.run.app/event", {
+            severity: "INFO",
+            project:
+              process.env.NODE_ENV == "development" ? "hoyer-dev" : "hoyer",
+            message: "Academy nomination submitted.",
+            location: this.$route.fullPath,
+            metaData: this.form,
           });
-          window.top.location.href = "/academy-nominations-thank-you";
         } catch (e) {
           await axios.post("https://logger-kal2mblwyq-uk.a.run.app/event", {
             severity: "ERROR",
-            project: process.env.NODE_ENV == "dev" ? "hoyer-dev" : "hoyer",
+            project:
+              process.env.NODE_ENV == "development" ? "hoyer-dev" : "hoyer",
             message: `Academy nomination failed. Error message from formproc: ${e.message}`,
-            location: this.$route.query.page,
-            metaData: e.response.data,
+            location: this.$route.fullPath,
+            metaData: e,
           });
           this.submitStatus = "SUBMIT_ERROR";
-          setTimeout(() => {
-            this.submitStatus = "OK";
-          }, 5000);
         } finally {
-          await axios.post("https://logger-kal2mblwyq-uk.a.run.app/event", {
-            severity: "INFO",
-            project: process.env.NODE_ENV == "dev" ? "hoyer-dev" : "hoyer",
-            message: "Academy nomination submitted.",
-            location: this.$route.query.page,
-            metaData: this.form,
-          });
+        this.$refs.form.$el.submit();
         }
       }
     },

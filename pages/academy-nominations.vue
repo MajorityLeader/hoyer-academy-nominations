@@ -1,6 +1,6 @@
 <template>
   <v-app id="inspire">
-    <v-form v-model="valid" ref="form" autocomplete="on" method="post" @submit.prevent="formSubmit" action="/htbin/formproc/nominations.txt&display=/academy-nominations-thank-you&nobase&fpGetVer=2">
+    <v-form v-model="valid" ref="form" autocomplete="on" method="post" enctype="multipart/form-data" @submit.prevent="formSubmit" action="/htbin/formproc/nominations.txt&display=/academy-nominations-thank-you&nobase&fpGetVer=2">
       <v-container>
         <v-subheader>Fields marked with * are required.</v-subheader>
         <fieldset class="pa-5 mb-10">
